@@ -8,7 +8,12 @@ def get_input():
 
 def get_score():
     bama_score = input("how many points did bama score:")
-    print(bama_score)
+    lsu_score = input("how many points did lsu score")
+
+    if lsu_score > bama_score:
+        print("Get on the Lane Train!")
+    else:
+        print("Somebody fire this bum")
 
 if __name__ == "__main__":
     try:
