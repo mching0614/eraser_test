@@ -1,0 +1,47 @@
+flowchart-diagram
+
+title Geaux Tigers Script Flow
+direction right
+textSize large
+
+// Nodes
+Start [shape: oval, color: lightblue, icon: play]
+
+Get Input [color: blue, icon: user] {
+    Prompt for name [icon: edit]
+    Is name Ryan? [shape: diamond, color: orange, icon: help-circle]
+    Print Geaux Tigers [color: green, icon: check]
+    Print not Ryan [color: red, icon: x]
+}
+
+Get Score [color: purple, icon: award] {
+    Prompt for Bama score [icon: edit]
+    Prompt for LSU score [icon: edit]
+    Did LSU win? [shape: diamond, color: orange, icon: help-circle]
+    Print Lane Train [color: green, icon: check]
+    Print fire this bum [color: red, icon: x]
+}
+
+Error Handler [color: red, icon: alert-triangle] {
+    Exception occurred? [shape: diamond, color: orange]
+    Print error [color: red, icon: alert-circle]
+}
+
+End [shape: oval, color: lightblue, icon: square]
+
+// Relationships
+Start > Prompt for name
+Prompt for name > Is name Ryan?
+Is name Ryan? > Print Geaux Tigers: Yes
+Is name Ryan? > Print not Ryan: No
+Print Geaux Tigers > Prompt for Bama score
+Print not Ryan > Prompt for Bama score
+Prompt for Bama score > Prompt for LSU score
+Prompt for LSU score > Did LSU win?
+Did LSU win? > Print Lane Train: Yes
+Did LSU win? > Print fire this bum: No
+Print Lane Train > Exception occurred?
+Print fire this bum > Exception occurred?
+Exception occurred? > Print error: Yes
+Exception occurred? > End: No
+Print error > End
