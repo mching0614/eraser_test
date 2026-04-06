@@ -19,9 +19,16 @@ def get_score():
     else:
         print("Somebody fire this bum")
 
+def national_champs():
+    print("Who will be the national champs?")
+
+    if True:
+        print("LSU!!!")
+
 if __name__ == "__main__":
     try:
         input_1 = get_input()
         input_2 = get_score()
+        national_champs()
     except Exception as e:
         print(e)
