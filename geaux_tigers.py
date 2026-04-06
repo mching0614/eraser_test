@@ -1,3 +1,7 @@
+## This is a test Python script. Its purpose is to exercise and
+## evaluate the Eraser.io tool
+##
+
 def get_input():
     name_input = input("Enter your name:")
     if name_input.lower().strip() == 'ryan':
