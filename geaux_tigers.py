@@ -24,6 +24,7 @@ def national_champs():
 
     if True:
         print("LSU!!!")
+        print("Bama stinks")
 
 if __name__ == "__main__":
     try:
