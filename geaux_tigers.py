@@ -38,11 +38,15 @@ def predict_wl():
         except ValueError:
             print("That's not a valid integer. Please input a number.")
 
+def print_hello():
+    print("Hello Jon")
+
 if __name__ == "__main__":
     try:
         input_1 = get_input()
         input_2 = get_score()
         predict_wl()
         national_champs()
+        print_hello()
     except Exception as e:
         print(e)
