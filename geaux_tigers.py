@@ -39,7 +39,7 @@ def predict_wl():
             print("That's not a valid integer. Please input a number.")
 
 def print_hello():
-    print("Hello Jon")
+    print("Hello Sam")
 
 if __name__ == "__main__":
     try:
