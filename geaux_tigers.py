@@ -40,6 +40,7 @@ def predict_wl():
 
 def print_hello():
     print("Hello Sam")
+    print("Hello Ryan")
 
 if __name__ == "__main__":
     try:
