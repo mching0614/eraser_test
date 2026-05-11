@@ -1,139 +1,164 @@
-# Python Script Flow Analysis
-
-<table>
-<tr>
-<td style="vertical-align: top; width: 25%;">
+# Python Script Flow Diagram Analysis
 
 ## Program Flow Summary
 
-This script is an LSU Tigers themed interactive Python program that collects user input and displays themed messages.
+### Overview
+This script is a test Python program themed around LSU Tigers football fandom. It runs a sequence of five functions within a `try/except` block in the `__main__` entry point.
 
-## Function Descriptions
+### Function Descriptions
 
-### 1. `get_input()`
-Prompts the user for their name. If the name is "ryan" (case-insensitive, stripped), prints "GEAUX TIGERS"; otherwise prints "You are not Ryan."
+#### `get_input()`
+Prompts the user for their name. If the name (case-insensitive, trimmed) equals "ryan", it prints "GEAUX TIGERS"; otherwise, it prints "You are not Ryan". Returns the name.
 
-### 2. `get_score()`
-Asks for Alabama and LSU scores. Compares them and prints a message based on who scored higher. **Note:** contains a bug — compares strings, not integers.
+#### `get_score()`
+Asks the user for Alabama's and LSU's scores. Compares them and prints a message favoring LSU if they scored more, or expressing displeasure otherwise. **Note:** This function has a bug — it compares strings lexicographically, not numerically, since `input()` returns strings and no `int()` conversion is performed.
 
-### 3. `national_champs()`
-Always prints "LSU!!!" and "Bama stinks" because the condition is hardcoded to `True`.
+#### `predict_wl()`
+Loops indefinitely, asking the user to guess how many games LSU will win out of 12. Only accepts the answer `12`. Handles non-integer input via `ValueError` exception. The loop breaks only when the user enters `12`.
 
-### 4. `predict_wl()`
-Loops until the user guesses 12 wins. Handles `ValueError` for non-integer input.
+#### `national_champs()`
+Prints that LSU will be national champs. The `if True` block always executes — there is no real decision here, but it is represented structurally.
 
-### 5. `print_hello()`
-Simply prints "Hello Sam".
+#### `print_hello()`
+Simply prints two greeting lines: "Hello Sam" and "Hello Ryan".
 
-## Notes
+### Notes
+- The main block wraps all calls in a `try/except Exception` to catch and print any unexpected errors.
+- `get_score()` returns `None` implicitly (its return value is assigned to `input_2` but never used).
+- `predict_wl()` is the only function with a loop construct.
 
-- The `__main__` block wraps all calls in a `try/except` for generic exception handling.
-- `get_score()` has a subtle bug: it compares string values rather than integers, leading to lexicographic comparison.
-- `national_champs()` has a dead branch — the `if True` condition means the else path is unreachable.
-- `predict_wl()` is the only function with a loop and nested exception handling.
+---
 
-</td>
-<td style="width: 75%;">
+## Flow Diagram
 
 ```mermaid
 flowchart TB
-    classDef startNode fill:#90EE90,stroke:#333,stroke-width:2px,color:#000
-    classDef endNode fill:#FFB6C6,stroke:#333,stroke-width:2px,color:#000
-    classDef decisionNode fill:#FFE4B5,stroke:#333,stroke-width:2px,color:#000
-    classDef exceptionNode fill:#FFA07A,stroke:#333,stroke-width:2px,color:#000
+    classDef startStyle fill:#90EE90,stroke:#333,color:#000
+    classDef endStyle fill:#FFB6C6,stroke:#333,color:#000
+    classDef decisionStyle fill:#FFE4B5,stroke:#333,color:#000
+    classDef exceptionStyle fill:#FFA07A,stroke:#333,color:#000
 
-    Start(["▶ Start: __main__"]):::startNode
-    MainTryStart["Enter try block"]
+    Start(["▶ Start: __main__"]):::startStyle
+    TryBegin["Enter try block"]
     CallGetInput["Call get_input()"]
     CallGetScore["Call get_score()"]
     CallPredictWL["Call predict_wl()"]
     CallNationalChamps["Call national_champs()"]
     CallPrintHello["Call print_hello()"]
-    MainExcept["except Exception as e"]:::exceptionNode
-    PrintMainError["print(e)"]:::exceptionNode
-    EndProgram(["■ End Program"]):::endNode
+    MainEnd(["⏹ End Program"]):::endStyle
 
-    Start --> MainTryStart
-    MainTryStart --> CallGetInput
+    ExceptBlock["except Exception as e"]:::exceptionStyle
+    PrintException["print(e)"]:::exceptionStyle
+
+    Start --> TryBegin
+    TryBegin --> CallGetInput
     CallGetInput --> GI_Entry
 
-    subgraph get_input_sub ["get_input()"]
+    subgraph get_input_sg ["get_input()"]
         direction LR
-        GI_Entry(["Enter"]):::startNode --> GI_NameInput[/"input: Enter your name"/]
-        GI_NameInput --> GI_Check{"name == 'ryan'?"}:::decisionNode
-        GI_Check -->|Yes| GI_Geaux["print: GEAUX TIGERS"]
-        GI_Check -->|No| GI_NotRyan["print: You are not Ryan"]
-        GI_Geaux --> GI_Return["return name_input"]
-        GI_NotRyan --> GI_Return
-        GI_Return --> GI_Exit(["Exit"]):::endNode
+        GI_Entry(["Enter"]):::startStyle
+        GI_Prompt["name_input = input('Enter your name: ')"]
+        GI_Decision{"name_input.lower().strip()\n== 'ryan'?"}:::decisionStyle
+        GI_Yes["print('GEAUX TIGERS')"]
+        GI_No["print('You are not Ryan')"]
+        GI_Return["return name_input"]
+        GI_Exit(["Exit"]):::endStyle
+
+        GI_Entry --> GI_Prompt
+        GI_Prompt --> GI_Decision
+        GI_Decision -->|Yes| GI_Yes
+        GI_Decision -->|No| GI_No
+        GI_Yes --> GI_Return
+        GI_No --> GI_Return
+        GI_Return --> GI_Exit
     end
 
     GI_Exit --> CallGetScore
     CallGetScore --> GS_Entry
 
-    subgraph get_score_sub ["get_score()"]
+    subgraph get_score_sg ["get_score()"]
         direction LR
-        GS_Entry(["Enter"]):::startNode --> GS_BamaInput[/"input: bama score"/]
-        GS_BamaInput --> GS_LSUInput[/"input: lsu score"/]
-        GS_LSUInput --> GS_Compare{"lsu_score > bama_score?"}:::decisionNode
-        GS_Compare -->|Yes| GS_LaneTrain["print: Get on the Lane Train!"]
-        GS_Compare -->|No| GS_FireBum["print: Somebody fire this bum"]
-        GS_LaneTrain --> GS_Exit(["Exit"]):::endNode
-        GS_FireBum --> GS_Exit
+        GS_Entry(["Enter"]):::startStyle
+        GS_BamaInput["bama_score = input('how many points did bama score?: ')"]
+        GS_LSUInput["lsu_score = input('how many points did lsu score?: ')"]
+        GS_Decision{"lsu_score > bama_score?\n(string comparison)"}:::decisionStyle
+        GS_Yes["print('Get on the Lane Train!')"]
+        GS_No["print('Somebody fire this bum')"]
+        GS_Exit(["Exit"]):::endStyle
+
+        GS_Entry --> GS_BamaInput
+        GS_BamaInput --> GS_LSUInput
+        GS_LSUInput --> GS_Decision
+        GS_Decision -->|Yes| GS_Yes
+        GS_Decision -->|No| GS_No
+        GS_Yes --> GS_Exit
+        GS_No --> GS_Exit
     end
 
     GS_Exit --> CallPredictWL
     CallPredictWL --> PW_Entry
 
-    subgraph predict_wl_sub ["predict_wl()"]
+    subgraph predict_wl_sg ["predict_wl()"]
         direction LR
-        PW_Entry(["Enter"]):::startNode --> PW_LoopStart{"while True"}:::decisionNode
-        PW_LoopStart --> PW_TryStart["Enter try block"]
-        PW_TryStart --> PW_Input[/"input: How many wins?"/]
-        PW_Input --> PW_IntParse["int() conversion"]
-        PW_IntParse --> PW_CheckVal{"wins_guess == 12?"}:::decisionNode
-        PW_CheckVal -->|Yes| PW_Smart["print: You are purty smart!"]
-        PW_Smart --> PW_Break["break"]
-        PW_Break --> PW_Exit(["Exit"]):::endNode
-        PW_CheckVal -->|No| PW_Incorrect["print: Incorrect. Try again"]
-        PW_Incorrect --> PW_LoopStart
-        PW_IntParse -. "ValueError" .-> PW_ValErr["print: not a valid integer"]:::exceptionNode
-        PW_ValErr --> PW_LoopStart
+        PW_Entry(["Enter"]):::startStyle
+        PW_LoopStart{"while True"}:::decisionStyle
+        PW_TryBlock["Enter try block"]
+        PW_Input["wins_guess = int(input('...How many games will they win?: '))"]
+        PW_Check{"wins_guess == 12?"}:::decisionStyle
+        PW_Correct["print('You are purty smart!')"]
+        PW_Break["break"]
+        PW_Wrong["print('Incorrect. Try again')"]
+        PW_ValueError["except ValueError:\nprint('That''s not a valid integer...')"]:::exceptionStyle
+        PW_Exit(["Exit"]):::endStyle
+
+        PW_Entry --> PW_LoopStart
+        PW_LoopStart -->|Iterate| PW_TryBlock
+        PW_TryBlock --> PW_Input
+        PW_Input --> PW_Check
+        PW_Check -->|Yes| PW_Correct
+        PW_Correct --> PW_Break
+        PW_Break --> PW_Exit
+        PW_Check -->|No| PW_Wrong
+        PW_Wrong --> PW_LoopStart
+        PW_Input -. "ValueError" .-> PW_ValueError
+        PW_ValueError --> PW_LoopStart
     end
 
     PW_Exit --> CallNationalChamps
     CallNationalChamps --> NC_Entry
 
-    subgraph national_champs_sub ["national_champs()"]
+    subgraph national_champs_sg ["national_champs()"]
         direction LR
-        NC_Entry(["Enter"]):::startNode --> NC_AskWho["print: Who will be the national champs?"]
-        NC_AskWho --> NC_IfTrue{"if True"}:::decisionNode
-        NC_IfTrue -->|"Always True"| NC_LSU["print: LSU!!!"]
-        NC_LSU --> NC_BamaStinks["print: Bama stinks"]
-        NC_BamaStinks --> NC_Exit(["Exit"]):::endNode
+        NC_Entry(["Enter"]):::startStyle
+        NC_Print1["print('Who will be the national champs?')"]
+        NC_Decision{"if True"}:::decisionStyle
+        NC_Body["print('LSU!!!')\nprint('Bama stinks')"]
+        NC_Exit(["Exit"]):::endStyle
+
+        NC_Entry --> NC_Print1
+        NC_Print1 --> NC_Decision
+        NC_Decision -->|"Always True"| NC_Body
+        NC_Body --> NC_Exit
     end
 
     NC_Exit --> CallPrintHello
     CallPrintHello --> PH_Entry
 
-    subgraph print_hello_sub ["print_hello()"]
+    subgraph print_hello_sg ["print_hello()"]
         direction LR
-        PH_Entry(["Enter"]):::startNode --> PH_Print["print: Hello Sam"]
-        PH_Print --> PH_Exit(["Exit"]):::endNode
+        PH_Entry(["Enter"]):::startStyle
+        PH_Sam["print('Hello Sam')"]
+        PH_Ryan["print('Hello Ryan')"]
+        PH_Exit(["Exit"]):::endStyle
+
+        PH_Entry --> PH_Sam
+        PH_Sam --> PH_Ryan
+        PH_Ryan --> PH_Exit
     end
 
-    PH_Exit --> EndProgram
+    PH_Exit --> MainEnd
 
-    MainTryStart -. "Exception" .-> MainExcept
-    CallGetInput -. "Exception" .-> MainExcept
-    CallGetScore -. "Exception" .-> MainExcept
-    CallPredictWL -. "Exception" .-> MainExcept
-    CallNationalChamps -. "Exception" .-> MainExcept
-    CallPrintHello -. "Exception" .-> MainExcept
-    MainExcept --> PrintMainError
-    PrintMainError --> EndProgram
+    TryBegin -. "Exception raised" .-> ExceptBlock
+    ExceptBlock --> PrintException
+    PrintException --> MainEnd
 ```
-
-</td>
-</tr>
-</table>
