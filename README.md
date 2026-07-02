@@ -7,6 +7,8 @@ This is a test of the eraser Github integration.
 
 It is working pretty well so far.
 
+Now I am testing Github actions.
+
 
 
 <!--- Eraser file: https://app.eraser.io/workspace/uZLh5UiIbbDDOsNVzagH --->
